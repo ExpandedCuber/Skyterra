@@ -48,7 +48,7 @@ class AspectOfTheEnd(settings: Settings) : SkySword(settings) {
                     player.setVelocity(0.0, 0.0, 0.0)
                     player.velocityModified = true
 
-                    return ActionResult.PASS
+                    return ActionResult.SUCCESS
                 }
                 HitResult.Type.MISS, HitResult.Type.ENTITY -> {
                     val pos = hit.pos
@@ -60,13 +60,13 @@ class AspectOfTheEnd(settings: Settings) : SkySword(settings) {
 
                     player.fallDistance = 0.0
 
-                    return ActionResult.PASS
+                    return ActionResult.SUCCESS
                 }
                 else -> {
                 }
             }
 
-            return ActionResult.PASS
+            return ActionResult.SUCCESS
         }
     }
 

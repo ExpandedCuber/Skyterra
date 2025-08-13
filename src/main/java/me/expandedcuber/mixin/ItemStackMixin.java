@@ -1,6 +1,7 @@
 package me.expandedcuber.mixin;
 
 import com.google.common.collect.Lists;
+import me.expandedcuber.Skyterra;
 import me.expandedcuber.components.ItemStatComponent;
 import me.expandedcuber.components.ModDataComponents;
 import me.expandedcuber.item.SkyItem;
@@ -77,8 +78,11 @@ public abstract class ItemStackMixin implements ComponentHolder {
         ItemStatComponent stats = this.get(ModDataComponents.INSTANCE.getITEM_STAT());
         double breakingPower;
 
-        if(stats != null) breakingPower = stats.getStats().get(Stat.BREAKING_POWER);
-        else breakingPower = 0.0;
+        if(stats != null) {
+            breakingPower = stats.getStats().getOrDefault(Stat.BREAKING_POWER, 0.0);
+        } else {
+            breakingPower = 0.0;
+        }
 
         if(this.getItem() instanceof SkyItem skyItem) {
             List<Text> lore = skyItem.getLore();

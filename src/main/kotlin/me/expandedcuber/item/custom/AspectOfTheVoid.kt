@@ -3,6 +3,7 @@ package me.expandedcuber.item.custom
 import me.expandedcuber.item.ItemAbility
 import me.expandedcuber.item.ItemAbilityType
 import me.expandedcuber.item.SkyItem
+import me.expandedcuber.item.SkySword
 import me.expandedcuber.util.PlayerUtil
 import me.expandedcuber.util.Rarity
 import me.expandedcuber.util.TextUtil
@@ -17,7 +18,7 @@ import net.minecraft.util.hit.HitResult
 import net.minecraft.world.RaycastContext
 import net.minecraft.world.World
 
-class AspectOfTheVoid(settings: Settings) : SkyItem(settings) {
+class AspectOfTheVoid(settings: Settings) : SkySword(settings) {
     class InstantTransmission(item: Item, type: ItemAbilityType)
         : ItemAbility(item, "Instant Transmission",
         listOf(

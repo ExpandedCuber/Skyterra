@@ -123,7 +123,7 @@ public abstract class InGameHudMixin {
         HudManager.INSTANCE.getEnabledElements().forEach(element -> {
             if(!element.getInitialized()) {
                 element.setInitialized(true);
-                element.setDefaultPos(context);
+                element.setDefaultPos();
             }
             SkyHudElement.Companion.renderElement(element, context, tickCounter, false);
         });

@@ -90,7 +90,6 @@ object ModItems {
             ModDataComponents.TOOL,
             ItemType.PICKAXE
         )
-        pickaxe()
     }
 
     inline fun <reified T : Item> register(

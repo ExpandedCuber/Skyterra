@@ -1,10 +1,9 @@
 package me.expandedcuber.hud
 
 import me.expandedcuber.util.SkyRenderTickCounter
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.render.RenderTickCounter
 import net.minecraft.text.Text
 
 class GuiConfigScreen : Screen(Text.literal("Config")) {
@@ -21,6 +20,8 @@ class GuiConfigScreen : Screen(Text.literal("Config")) {
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        val client = MinecraftClient.getInstance()
+
         for (element in HudManager.getEnabledElements().reversed()) {
             val scaledX = element.x * element.scale
             val scaledY = element.y * element.scale
@@ -29,10 +30,10 @@ class GuiConfigScreen : Screen(Text.literal("Config")) {
 
             if (mouseX >= scaledX && mouseX <= scaledX + scaledWidth &&
                 mouseY >= scaledY && mouseY <= scaledY + scaledHeight) {
-                draggingElement = element as SkyHudElement?
-                dragOffsetX = (mouseX - element.x * element.scale).toInt()
-                dragOffsetY = (mouseY - element.y * element.scale).toInt()
-                println("Dragging")
+
+                draggingElement = element
+                dragOffsetX = (mouseX - scaledX).toInt()
+                dragOffsetY = (mouseY - scaledY).toInt()
                 return true
             }
         }
@@ -40,9 +41,27 @@ class GuiConfigScreen : Screen(Text.literal("Config")) {
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
-        draggingElement?.let {
-            it.x = ((mouseX - dragOffsetX) / it.scale).toInt()
-            it.y = ((mouseY - dragOffsetY) / it.scale).toInt()
+        draggingElement?.let { element ->
+            val client = MinecraftClient.getInstance()
+            val screenWidth = client.window.scaledWidth
+            val screenHeight = client.window.scaledHeight
+
+            val rawX = (mouseX - dragOffsetX) / element.scale
+            val rawY = (mouseY - dragOffsetY) / element.scale
+
+            val baseX = when (element.anchor) {
+                Anchor.TOP_LEFT, Anchor.CENTER_LEFT, Anchor.BOTTOM_LEFT -> 0
+                Anchor.TOP_CENTER, Anchor.CENTER, Anchor.BOTTOM_CENTER -> screenWidth / 2
+                Anchor.TOP_RIGHT, Anchor.CENTER_RIGHT, Anchor.BOTTOM_RIGHT -> screenWidth
+            }
+            val baseY = when (element.anchor) {
+                Anchor.TOP_LEFT, Anchor.TOP_CENTER, Anchor.TOP_RIGHT -> 0
+                Anchor.CENTER_LEFT, Anchor.CENTER, Anchor.CENTER_RIGHT -> screenHeight / 2
+                Anchor.BOTTOM_LEFT, Anchor.BOTTOM_CENTER, Anchor.BOTTOM_RIGHT -> screenHeight
+            }
+
+            element.offsetX = rawX.toInt() - baseX
+            element.offsetY = rawY.toInt() - baseY
 
             return true
         }

@@ -1,5 +1,6 @@
 package me.expandedcuber.hud
 
+import me.expandedcuber.config.Config
 import me.expandedcuber.stats.Stat
 import me.expandedcuber.stats.PlayerStats
 import me.expandedcuber.util.TextUtil
@@ -17,21 +18,34 @@ class ManaElement : SkyHudElement() {
     override var enabled: Boolean = true
     override var width: Int = 0
     override var height: Int = 0
+    override var scaledWidth: Int = 0
+    override var scaledHeight: Int = 0
+    override var scaledX: Int = 0
+    override var scaledY: Int = 0
     override var text: MutableText = Text.empty()
 
-    override fun setDefaultPos(context: DrawContext) {
-        val client = MinecraftClient.getInstance()
-        this.x = ((client.window.scaledWidth - width) / 2) + 60
-        this.y = ((client.window.scaledHeight * 3) / 4) + 10
-        this.scale = 0.5f
+    override fun setDefaultPos() {
+        val configPos = Config.getHudElementPosition(this)
+
+        if (configPos != null) {
+            this.x = configPos.x
+            this.y = configPos.y
+            this.scale = 0.5f
+        } else {
+            anchor = Anchor.BOTTOM_CENTER
+            offsetX = 60
+            offsetY = -30
+            scale = 0.5f
+        }
     }
 
     override fun render(context: DrawContext, tickCounter: RenderTickCounter, inEditor: Boolean) {
-        if(inEditor) {
-            this.text = TextUtil.literal("%aqua%123/123✎ Mana")
-        } else {
-            this.text = TextUtil.literal("%aqua%${PlayerStats.get(Stat.MANA).toInt()}/${Stat.MANA.default.toInt()}✎ Mana")
-        }
+        this.scaledWidth = (this.width * this.scale).toInt()
+        this.scaledHeight = (this.height * this.scale).toInt()
+        this.scaledX = (this.x * this.scale).toInt()
+        this.scaledY = (this.y * this.scale).toInt()
+
+        this.text = TextUtil.literal("%aqua%${PlayerStats.get(Stat.MANA).toInt()}/${Stat.MANA.default.toInt()}✎ Mana")
 
         val client = MinecraftClient.getInstance()
 

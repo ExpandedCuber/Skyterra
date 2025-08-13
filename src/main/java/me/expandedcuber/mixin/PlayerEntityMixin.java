@@ -41,6 +41,6 @@ public class PlayerEntityMixin implements SkyBobberDuck {
         float baseSpeed = cir.getReturnValueF();
         float speed = speedStat / 100.0f;
 
-        cir.setReturnValue(Math.max(speed, 0.01f) * baseSpeed);
+        cir.setReturnValue(Math.max(speed, 1f) * baseSpeed);
     }
 }

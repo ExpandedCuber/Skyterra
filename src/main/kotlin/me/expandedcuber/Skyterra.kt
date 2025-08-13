@@ -1,6 +1,7 @@
 package me.expandedcuber
 
 import me.expandedcuber.components.ModDataComponents
+import me.expandedcuber.config.Config
 import me.expandedcuber.hud.GuiConfigScreen
 import me.expandedcuber.hud.HudManager
 import me.expandedcuber.hud.ManaElement
@@ -12,6 +13,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.client.MinecraftClient
@@ -41,13 +43,13 @@ object Skyterra : ModInitializer {
 	override fun onInitialize() {
 		logger.info("Skyterra has started.")
 
+		Config.register()
 		ModItems.registerItems()
 		ModDataComponents.registerComponents()
 
 		Scheduler.start()
 
 		HudManager.register(ManaElement())
-
 
 		Registry.register(
 			Registries.CHUNK_GENERATOR,
@@ -73,6 +75,8 @@ object Skyterra : ModInitializer {
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register {
 			Scheduler.stop()
+			Config.saveHudElements()
+			Config.config.save()
 		}
 	}
 
